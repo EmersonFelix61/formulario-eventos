@@ -17,6 +17,10 @@
       max-width: 500px;
       margin-bottom: 2rem;
     }
+    label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
     input, textarea, select {
       display: block;
       width: 100%;
@@ -54,31 +58,68 @@
   <h1>Cadastro de Evento</h1>
 
   <form id="eventoForm">
-    <input type="text" id="titulo" placeholder="Título do Evento" required />
-    <input type="text" id="nome" placeholder="Nome da Reserva" required />
-    <input type="text" id="contato" placeholder="Contato do Cliente" required />
+    <label for="titulo">Título do Evento</label>
+    <input type="text" id="titulo" required />
+
+    <label for="nome">Nome da Reserva</label>
+    <input type="text" id="nome" required />
+
+    <label for="contato">Contato do Cliente</label>
+    <input type="text" id="contato" required />
+
+    <label for="data">Data da Reserva</label>
     <input type="date" id="data" required />
+
+    <label for="pessoas">Número de Pessoas</label>
+    <input type="number" id="pessoas" required />
+
+    <label for="inicio">Horário de Início</label>
     <input type="time" id="inicio" required />
+
+    <label for="fim">Horário de Término</label>
     <input type="time" id="fim" required />
-    <textarea id="menu" placeholder="Menu" required></textarea>
+
+    <label for="menu">Menu</label>
+    <textarea id="menu" required></textarea>
+
+    <label for="recepcao">Extra Recepção?</label>
     <select id="recepcao">
-      <option value="">Extra Recepção?</option>
+      <option value="">Selecione</option>
       <option value="Sim">Sim</option>
       <option value="Não">Não</option>
     </select>
-    <textarea id="extra" placeholder="Extra Principal"></textarea>
-    <textarea id="prato" placeholder="Prato Principal"></textarea>
-    <textarea id="sobremesa" placeholder="Sobremesa"></textarea>
-    <textarea id="decoracao" placeholder="Decoração"></textarea>
-    <textarea id="taxa" placeholder="Taxa de Bolo"></textarea>
-    <textarea id="extras" placeholder="Extras Gerais"></textarea>
-    <input type="text" id="valor" placeholder="Valor Total" />
-    <input type="text" id="sinal" placeholder="Valor do Sinal" />
+
+    <label for="entrada">Entrada Principal</label>
+    <textarea id="entrada"></textarea>
+
+    <label for="prato">Prato Principal</label>
+    <textarea id="prato"></textarea>
+
+    <label for="sobremesa">Sobremesa</label>
+    <textarea id="sobremesa"></textarea>
+
+    <label for="decoracao">Decoração</label>
+    <textarea id="decoracao"></textarea>
+
+    <label for="taxa">Taxa de Bolo</label>
+    <textarea id="taxa"></textarea>
+
+    <label for="extras">Extras Gerais</label>
+    <textarea id="extras"></textarea>
+
+    <label for="valor">Valor Total</label>
+    <input type="text" id="valor" />
+
+    <label for="sinal">Valor do Sinal</label>
+    <input type="text" id="sinal" />
+
+    <label for="pago">Pago?</label>
     <select id="pago">
-      <option value="">Pago?</option>
+      <option value="">Selecione</option>
       <option value="Sim">Sim</option>
       <option value="Não">Não</option>
     </select>
+
     <button type="submit">Salvar</button>
   </form>
 
@@ -100,11 +141,12 @@
           <div class="detalhes">
             <p><strong>Nome:</strong> ${evento.nome}</p>
             <p><strong>Contato:</strong> ${evento.contato}</p>
+            <p><strong>Pessoas:</strong> ${evento.pessoas}</p>
             <p><strong>Início:</strong> ${evento.inicio}</p>
             <p><strong>Término:</strong> ${evento.fim}</p>
             <p><strong>Menu:</strong> ${evento.menu}</p>
             ${evento.recepcao === 'Sim' ? `<p><strong>Recepção:</strong> Sim</p>` : ''}
-            <p><strong>Extra:</strong> ${evento.extra}</p>
+            <p><strong>Entrada:</strong> ${evento.entrada}</p>
             <p><strong>Prato:</strong> ${evento.prato}</p>
             <p><strong>Sobremesa:</strong> ${evento.sobremesa}</p>
             <p><strong>Decoração:</strong> ${evento.decoracao}</p>
@@ -141,11 +183,12 @@
         nome: document.getElementById('nome').value,
         contato: document.getElementById('contato').value,
         data: document.getElementById('data').value,
+        pessoas: document.getElementById('pessoas').value,
         inicio: document.getElementById('inicio').value,
         fim: document.getElementById('fim').value,
         menu: document.getElementById('menu').value,
         recepcao: document.getElementById('recepcao').value,
-        extra: document.getElementById('extra').value,
+        entrada: document.getElementById('entrada').value,
         prato: document.getElementById('prato').value,
         sobremesa: document.getElementById('sobremesa').value,
         decoracao: document.getElementById('decoracao').value,
@@ -166,5 +209,6 @@
 
     carregarEventos();
   </script>
+
 </body>
 </html>
