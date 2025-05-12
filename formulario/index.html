@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Eventos da Maria</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-color: #fdf7ec;
+      color: #2c2c2c;
+      padding: 2rem;
+    }
+    form {
+      background: #f1e6d0;
+      padding: 1rem;
+      border-radius: 8px;
+      max-width: 500px;
+      margin-bottom: 2rem;
+    }
+    input, textarea, select {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #b38b45;
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #8c6b2c;
+    }
+    li {
+      margin-bottom: 1rem;
+      cursor: pointer;
+      list-style: none;
+    }
+    .detalhes {
+      background: #f1e6d0;
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      border-left: 3px solid #b38b45;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cadastro de Evento</h1>
+
+  <form id="eventoForm">
+    <input type="text" id="titulo" placeholder="Título do Evento" required />
+    <input type="text" id="nome" placeholder="Nome da Reserva" required />
+    <input type="text" id="contato" placeholder="Contato do Cliente" required />
+    <input type="date" id="data" required />
+    <input type="time" id="inicio" required />
+    <input type="time" id="fim" required />
+    <textarea id="menu" placeholder="Menu" required></textarea>
+    <select id="recepcao">
+      <option value="">Extra Recepção?</option>
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
+    <textarea id="extra" placeholder="Extra Principal"></textarea>
+    <textarea id="prato" placeholder="Prato Principal"></textarea>
+    <textarea id="sobremesa" placeholder="Sobremesa"></textarea>
+    <textarea id="decoracao" placeholder="Decoração"></textarea>
+    <textarea id="taxa" placeholder="Taxa de Bolo"></textarea>
+    <textarea id="extras" placeholder="Extras Gerais"></textarea>
+    <input type="text" id="valor" placeholder="Valor Total" />
+    <input type="text" id="sinal" placeholder="Valor do Sinal" />
+    <select id="pago">
+      <option value="">Pago?</option>
+      <option value="Sim">Sim</option>
+      <option value="Não">Não</option>
+    </select>
+    <button type="submit">Salvar</button>
+  </form>
+
+  <h2>Eventos Salvos</h2>
+  <ul id="listaEventos"></ul>
+
+  <script>
+    const form = document.getElementById('eventoForm');
+    const lista = document.getElementById('listaEventos');
+
+    function carregarEventos() {
+      const dados = JSON.parse(localStorage.getItem('eventos')) || [];
+      lista.innerHTML = '';
+
+      dados.forEach((evento, index) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+          <strong>${evento.data}</strong> – ${evento.titulo}
+          <div class="detalhes">
+            <p><strong>Nome:</strong> ${evento.nome}</p>
+            <p><strong>Contato:</strong> ${evento.contato}</p>
+            <p><strong>Início:</strong> ${evento.inicio}</p>
+            <p><strong>Término:</strong> ${evento.fim}</p>
+            <p><strong>Menu:</strong> ${evento.menu}</p>
+            ${evento.recepcao === 'Sim' ? `<p><strong>Recepção:</strong> Sim</p>` : ''}
+            <p><strong>Extra:</strong> ${evento.extra}</p>
+            <p><strong>Prato:</strong> ${evento.prato}</p>
+            <p><strong>Sobremesa:</strong> ${evento.sobremesa}</p>
+            <p><strong>Decoração:</strong> ${evento.decoracao}</p>
+            <p><strong>Taxa de Bolo:</strong> ${evento.taxa}</p>
+            <p><strong>Extras:</strong> ${evento.extras}</p>
+            <p><strong>Valor Total:</strong> ${evento.valor}</p>
+            <p><strong>Sinal:</strong> ${evento.sinal}</p>
+            <p><strong>Pago:</strong> ${evento.pago}</p>
+            <button onclick="excluirEvento(${index})">Excluir</button>
+          </div>
+        `;
+
+        li.addEventListener('click', () => {
+          const detalhes = li.querySelector('.detalhes');
+          detalhes.style.display = (detalhes.style.display === 'block') ? 'none' : 'block';
+        });
+
+        lista.appendChild(li);
+      });
+    }
+
+    function excluirEvento(index) {
+      let dados = JSON.parse(localStorage.getItem('eventos')) || [];
+      dados.splice(index, 1);
+      localStorage.setItem('eventos', JSON.stringify(dados));
+      carregarEventos();
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const evento = {
+        titulo: document.getElementById('titulo').value,
+        nome: document.getElementById('nome').value,
+        contato: document.getElementById('contato').value,
+        data: document.getElementById('data').value,
+        inicio: document.getElementById('inicio').value,
+        fim: document.getElementById('fim').value,
+        menu: document.getElementById('menu').value,
+        recepcao: document.getElementById('recepcao').value,
+        extra: document.getElementById('extra').value,
+        prato: document.getElementById('prato').value,
+        sobremesa: document.getElementById('sobremesa').value,
+        decoracao: document.getElementById('decoracao').value,
+        taxa: document.getElementById('taxa').value,
+        extras: document.getElementById('extras').value,
+        valor: document.getElementById('valor').value,
+        sinal: document.getElementById('sinal').value,
+        pago: document.getElementById('pago').value,
+      };
+
+      const eventosSalvos = JSON.parse(localStorage.getItem('eventos')) || [];
+      eventosSalvos.push(evento);
+      localStorage.setItem('eventos', JSON.stringify(eventosSalvos));
+
+      form.reset();
+      carregarEventos();
+    });
+
+    carregarEventos();
+  </script>
+</body>
+</html>
