@@ -127,88 +127,126 @@
   <ul id="listaEventos"></ul>
 
   <script>
-    const form = document.getElementById('eventoForm');
-    const lista = document.getElementById('listaEventos');
+  const form = document.getElementById('eventoForm');
+  const lista = document.getElementById('listaEventos');
+  let editandoIndex = null;
 
-    function carregarEventos() {
-      const dados = JSON.parse(localStorage.getItem('eventos')) || [];
-      lista.innerHTML = '';
+  function carregarEventos() {
+    let dados = JSON.parse(localStorage.getItem('eventos')) || [];
 
-      dados.forEach((evento, index) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-          <strong>${evento.data}</strong> – ${evento.titulo}
-          <div class="detalhes">
-            <p><strong>Nome:</strong> ${evento.nome}</p>
-            <p><strong>Contato:</strong> ${evento.contato}</p>
-            <p><strong>Pessoas:</strong> ${evento.pessoas}</p>
-            <p><strong>Início:</strong> ${evento.inicio}</p>
-            <p><strong>Término:</strong> ${evento.fim}</p>
-            <p><strong>Menu:</strong> ${evento.menu}</p>
-            ${evento.recepcao === 'Sim' ? `<p><strong>Recepção:</strong> Sim</p>` : ''}
-            <p><strong>Entrada:</strong> ${evento.entrada}</p>
-            <p><strong>Prato:</strong> ${evento.prato}</p>
-            <p><strong>Sobremesa:</strong> ${evento.sobremesa}</p>
-            <p><strong>Decoração:</strong> ${evento.decoracao}</p>
-            <p><strong>Taxa de Bolo:</strong> ${evento.taxa}</p>
-            <p><strong>Extras:</strong> ${evento.extras}</p>
-            <p><strong>Valor Total:</strong> ${evento.valor}</p>
-            <p><strong>Sinal:</strong> ${evento.sinal}</p>
-            <p><strong>Pago:</strong> ${evento.pago}</p>
-            <button onclick="excluirEvento(${index})">Excluir</button>
-          </div>
-        `;
+    // Ordenar por data (mais próxima primeiro)
+    dados.sort((a, b) => new Date(a.data) - new Date(b.data));
 
-        li.addEventListener('click', () => {
-          const detalhes = li.querySelector('.detalhes');
-          detalhes.style.display = (detalhes.style.display === 'block') ? 'none' : 'block';
-        });
+    lista.innerHTML = '';
 
-        lista.appendChild(li);
+    dados.forEach((evento, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `
+        <strong>${evento.data}</strong> – ${evento.titulo}
+        <div class="detalhes">
+          <p><strong>Nome:</strong> ${evento.nome}</p>
+          <p><strong>Contato:</strong> ${evento.contato}</p>
+          <p><strong>Pessoas:</strong> ${evento.pessoas}</p>
+          <p><strong>Início:</strong> ${evento.inicio}</p>
+          <p><strong>Término:</strong> ${evento.fim}</p>
+          <p><strong>Menu:</strong> ${evento.menu}</p>
+          ${evento.recepcao === 'Sim' ? `<p><strong>Recepção:</strong> Sim</p>` : ''}
+          <p><strong>Entrada:</strong> ${evento.entrada}</p>
+          <p><strong>Prato:</strong> ${evento.prato}</p>
+          <p><strong>Sobremesa:</strong> ${evento.sobremesa}</p>
+          <p><strong>Decoração:</strong> ${evento.decoracao}</p>
+          <p><strong>Taxa de Bolo:</strong> ${evento.taxa}</p>
+          <p><strong>Extras:</strong> ${evento.extras}</p>
+          <p><strong>Valor Total:</strong> ${evento.valor}</p>
+          <p><strong>Sinal:</strong> ${evento.sinal}</p>
+          <p><strong>Pago:</strong> ${evento.pago}</p>
+          <button onclick="editarEvento(${index})">Editar</button>
+          <button onclick="excluirEvento(${index})">Excluir</button>
+        </div>
+      `;
+
+      li.addEventListener('click', () => {
+        const detalhes = li.querySelector('.detalhes');
+        detalhes.style.display = (detalhes.style.display === 'block') ? 'none' : 'block';
       });
-    }
 
-    function excluirEvento(index) {
-      let dados = JSON.parse(localStorage.getItem('eventos')) || [];
-      dados.splice(index, 1);
-      localStorage.setItem('eventos', JSON.stringify(dados));
-      carregarEventos();
-    }
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const evento = {
-        titulo: document.getElementById('titulo').value,
-        nome: document.getElementById('nome').value,
-        contato: document.getElementById('contato').value,
-        data: document.getElementById('data').value,
-        pessoas: document.getElementById('pessoas').value,
-        inicio: document.getElementById('inicio').value,
-        fim: document.getElementById('fim').value,
-        menu: document.getElementById('menu').value,
-        recepcao: document.getElementById('recepcao').value,
-        entrada: document.getElementById('entrada').value,
-        prato: document.getElementById('prato').value,
-        sobremesa: document.getElementById('sobremesa').value,
-        decoracao: document.getElementById('decoracao').value,
-        taxa: document.getElementById('taxa').value,
-        extras: document.getElementById('extras').value,
-        valor: document.getElementById('valor').value,
-        sinal: document.getElementById('sinal').value,
-        pago: document.getElementById('pago').value,
-      };
-
-      const eventosSalvos = JSON.parse(localStorage.getItem('eventos')) || [];
-      eventosSalvos.push(evento);
-      localStorage.setItem('eventos', JSON.stringify(eventosSalvos));
-
-      form.reset();
-      carregarEventos();
+      lista.appendChild(li);
     });
+  }
 
+  function excluirEvento(index) {
+    let dados = JSON.parse(localStorage.getItem('eventos')) || [];
+    dados.splice(index, 1);
+    localStorage.setItem('eventos', JSON.stringify(dados));
     carregarEventos();
-  </script>
+  }
 
+  function editarEvento(index) {
+    let dados = JSON.parse(localStorage.getItem('eventos')) || [];
+    const evento = dados[index];
+
+    // Preenche o formulário
+    document.getElementById('titulo').value = evento.titulo;
+    document.getElementById('nome').value = evento.nome;
+    document.getElementById('contato').value = evento.contato;
+    document.getElementById('data').value = evento.data;
+    document.getElementById('pessoas').value = evento.pessoas;
+    document.getElementById('inicio').value = evento.inicio;
+    document.getElementById('fim').value = evento.fim;
+    document.getElementById('menu').value = evento.menu;
+    document.getElementById('recepcao').value = evento.recepcao;
+    document.getElementById('entrada').value = evento.entrada;
+    document.getElementById('prato').value = evento.prato;
+    document.getElementById('sobremesa').value = evento.sobremesa;
+    document.getElementById('decoracao').value = evento.decoracao;
+    document.getElementById('taxa').value = evento.taxa;
+    document.getElementById('extras').value = evento.extras;
+    document.getElementById('valor').value = evento.valor;
+    document.getElementById('sinal').value = evento.sinal;
+    document.getElementById('pago').value = evento.pago;
+
+    editandoIndex = index;
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const evento = {
+      titulo: document.getElementById('titulo').value,
+      nome: document.getElementById('nome').value,
+      contato: document.getElementById('contato').value,
+      data: document.getElementById('data').value,
+      pessoas: document.getElementById('pessoas').value,
+      inicio: document.getElementById('inicio').value,
+      fim: document.getElementById('fim').value,
+      menu: document.getElementById('menu').value,
+      recepcao: document.getElementById('recepcao').value,
+      entrada: document.getElementById('entrada').value,
+      prato: document.getElementById('prato').value,
+      sobremesa: document.getElementById('sobremesa').value,
+      decoracao: document.getElementById('decoracao').value,
+      taxa: document.getElementById('taxa').value,
+      extras: document.getElementById('extras').value,
+      valor: document.getElementById('valor').value,
+      sinal: document.getElementById('sinal').value,
+      pago: document.getElementById('pago').value,
+    };
+
+    const eventosSalvos = JSON.parse(localStorage.getItem('eventos')) || [];
+
+    if (editandoIndex !== null) {
+      eventosSalvos[editandoIndex] = evento;
+      editandoIndex = null;
+    } else {
+      eventosSalvos.push(evento);
+    }
+
+    localStorage.setItem('eventos', JSON.stringify(eventosSalvos));
+    form.reset();
+    carregarEventos();
+  });
+
+  carregarEventos();
+  </script>
 </body>
 </html>
